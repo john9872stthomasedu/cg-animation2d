@@ -17,11 +17,25 @@ class Renderer {
         this.prev_time = null;
         //Slide0 Ball
         this.ball_velocity = {x:0.25,y:0.25};
-        //Slide3
+        //Slide2 Growing/Shrinking
         this.growing1 = 1;
         this.dist1 = 75;
         this.growing2 = 1;
         this.dist2 = 75;
+        //Slide3 Fun
+        this.lxv = -.1;
+        this.lyv = .05;
+        this.rxv = .05;
+        this.ryv = -.07;
+        this.ld = 0;
+        this.ldir = 1;
+        this.lg = 0.03;
+        this.rd = 0;
+        this.rdir = 1;
+        this.rg = 0.07;
+        this.distamount = 0;
+        this.rotaterate = 0.2;
+        this.angle = 0;
 
         this.models = {
             slide0: [ //KRISTINA
@@ -121,7 +135,51 @@ class Renderer {
                     ]
                 }
             ],
-            slide3: []
+            slide3: [
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(750, 50, 1),
+                        CG.Vector3(750, 550, 1),
+                        CG.Vector3(50, 550, 1)
+                    ],
+                    vertices2: [
+                        CG.Vector3(80, 530, 1),
+                        CG.Vector3(280, 530, 1),
+                        CG.Vector3(280, 330, 1),
+                        CG.Vector3(80, 330, 1)
+                    ],
+                    vertices3: [
+                        CG.Vector3(720, 530, 1),
+                        CG.Vector3(520, 530, 1),
+                        CG.Vector3(520, 330, 1),
+                        CG.Vector3(720, 330, 1)
+                    ],
+                    vertices4: [
+                        CG.Vector3(150, 149, 1),
+                        CG.Vector3(650, 149, 1),
+                        CG.Vector3(650, 151, 1),
+                        CG.Vector3(150, 151, 1)
+                    ],
+                    vertices5: [
+                        CG.Vector3(165, 410, 1),
+                        CG.Vector3(205, 410, 1),
+                        CG.Vector3(205, 450, 1),
+                        CG.Vector3(165, 450, 1)
+                    ],
+                    vertices6: [
+                        CG.Vector3(600, 410, 1),
+                        CG.Vector3(640, 410, 1),
+                        CG.Vector3(640, 450, 1),
+                        CG.Vector3(600, 450, 1)
+                    ],
+                    vertices7: [
+                        CG.Vector3(390, 290, 1),
+                        CG.Vector3(410, 290, 1),
+                        CG.Vector3(410, 310, 1)
+                    ]
+                }
+            ]
         };
     }
 
@@ -259,13 +317,233 @@ class Renderer {
                 this.models.slide2[0].vertices[1] = CG.Vector3(250+this.dist1, 250-this.dist1, 1);
                 this.models.slide2[0].vertices[2] = CG.Vector3(250+this.dist1, 250+this.dist1, 1);
                 this.models.slide2[0].vertices[3] = CG.Vector3(250-this.dist1, 250+this.dist1, 1);
-
+                
                 this.models.slide2[0].vertices2[0] = CG.Vector3(550-this.dist1, 250-this.dist2, 1);
                 this.models.slide2[0].vertices2[1] = CG.Vector3(550+this.dist1, 250-this.dist2, 1);
                 this.models.slide2[0].vertices2[2] = CG.Vector3(550+this.dist1, 250+this.dist2, 1);
                 this.models.slide2[0].vertices2[3] = CG.Vector3(550-this.dist1, 250+this.dist2, 1);
                 break;
             case 3: //All of the above
+
+                //left eye logic
+                this.models.slide3[0].vertices5[0] =  CG.Vector3(this.models.slide3[0].vertices5[0].data[0][0] + 
+                    (delta_time * this.lxv), (this.models.slide3[0].vertices5[0].data[1][0]) 
+                    + delta_time * this.lyv, 1);
+                this.models.slide3[0].vertices5[1] =  CG.Vector3(this.models.slide3[0].vertices5[1].data[0][0] + 
+                    (delta_time * this.lxv), (this.models.slide3[0].vertices5[1].data[1][0]) 
+                    + delta_time * this.lyv, 1);
+                this.models.slide3[0].vertices5[2] =  CG.Vector3(this.models.slide3[0].vertices5[2].data[0][0] + 
+                    (delta_time * this.lxv), (this.models.slide3[0].vertices5[2].data[1][0]) 
+                    + delta_time * this.lyv, 1);
+                this.models.slide3[0].vertices5[3] =  CG.Vector3(this.models.slide3[0].vertices5[3].data[0][0] + 
+                    (delta_time * this.lxv), (this.models.slide3[0].vertices5[3].data[1][0]) 
+                    + delta_time * this.lyv, 1);
+
+                this.distamount = this.ld;
+                this.ld = this.ld + (delta_time * this.lg * this.ldir);
+                if(this.ld > 20){
+                    this.ld =  20 - (this.ld - 20)
+                    this.ldir *= -1;
+                }
+                if(this.ld < 0){
+                    this.ld = this.ld * -1;
+                    this.ldir *= -1;
+                }
+                this.distamount = this.ld - this.distamount;
+                this.models.slide3[0].vertices5[0] =  CG.Vector3(this.models.slide3[0].vertices5[0].data[0][0] 
+                    - this.distamount, this.models.slide3[0].vertices5[0].data[1][0] 
+                    - this.distamount, 1);
+                this.models.slide3[0].vertices5[1] =  CG.Vector3(this.models.slide3[0].vertices5[1].data[0][0] 
+                    + this.distamount, this.models.slide3[0].vertices5[1].data[1][0] 
+                    - this.distamount, 1);
+                this.models.slide3[0].vertices5[2] =  CG.Vector3(this.models.slide3[0].vertices5[2].data[0][0] 
+                    + this.distamount, this.models.slide3[0].vertices5[2].data[1][0] 
+                    + this.distamount, 1);
+                this.models.slide3[0].vertices5[3] =  CG.Vector3(this.models.slide3[0].vertices5[3].data[0][0] 
+                    - this.distamount, this.models.slide3[0].vertices5[3].data[1][0] 
+                    + this.distamount, 1);
+
+                //too far down
+                if(this.models.slide3[0].vertices5[1].data[1][0] < 330){
+                    this.models.slide3[0].vertices5[2] =  CG.Vector3(this.models.slide3[0].vertices5[2].data[0][0], 
+                        (this.models.slide3[0].vertices5[2].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices5[0].data[1][0]), 1);
+                    this.models.slide3[0].vertices5[3] =  CG.Vector3(this.models.slide3[0].vertices5[3].data[0][0], 
+                        (this.models.slide3[0].vertices5[3].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices5[0].data[1][0]), 1);
+                    this.models.slide3[0].vertices5[0] =  CG.Vector3(this.models.slide3[0].vertices5[0].data[0][0], 
+                        (this.models.slide3[0].vertices5[0].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices5[0].data[1][0]), 1);
+                    this.models.slide3[0].vertices5[1] =  CG.Vector3(this.models.slide3[0].vertices5[1].data[0][0], 
+                        (this.models.slide3[0].vertices5[1].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices5[1].data[1][0]), 1);
+                    this.lyv *= -1;
+                }
+                //too far up
+                else if(this.models.slide3[0].vertices5[3].data[1][0] > 530){
+                    this.models.slide3[0].vertices5[0] =  CG.Vector3(this.models.slide3[0].vertices5[0].data[0][0], 
+                        (this.models.slide3[0].vertices5[0].data[1][0]) 
+                        - (this.models.slide3[0].vertices5[2].data[1][0] - 530), 1);
+                    this.models.slide3[0].vertices5[1] =  CG.Vector3(this.models.slide3[0].vertices5[1].data[0][0], 
+                        (this.models.slide3[0].vertices5[1].data[1][0]) 
+                        - (this.models.slide3[0].vertices5[2].data[1][0] - 530), 1);
+                    this.models.slide3[0].vertices5[2] =  CG.Vector3(this.models.slide3[0].vertices5[2].data[0][0], 
+                        (this.models.slide3[0].vertices5[2].data[1][0]) 
+                        - (this.models.slide3[0].vertices5[2].data[1][0] - 530), 1);
+                    this.models.slide3[0].vertices5[3] =  CG.Vector3(this.models.slide3[0].vertices5[3].data[0][0], 
+                        (this.models.slide3[0].vertices5[3].data[1][0]) 
+                        - (this.models.slide3[0].vertices5[3].data[1][0] - 530), 1);
+                    this.lyv *= -1;
+                }
+                //too far right
+                if(this.models.slide3[0].vertices5[1].data[0][0] > 280){
+                    this.models.slide3[0].vertices5[0] = CG.Vector3(this.models.slide3[0].vertices5[0].data[0][0] - 
+                        (this.models.slide3[0].vertices5[1].data[0][0] - 280), 
+                        this.models.slide3[0].vertices5[0].data[1][0], 1);
+                    this.models.slide3[0].vertices5[3] = CG.Vector3(this.models.slide3[0].vertices5[3].data[0][0] - 
+                        (this.models.slide3[0].vertices5[1].data[0][0] - 280), 
+                        this.models.slide3[0].vertices5[3].data[1][0], 1);
+                    this.models.slide3[0].vertices5[2] = CG.Vector3(this.models.slide3[0].vertices5[2].data[0][0] - 
+                        (this.models.slide3[0].vertices5[1].data[0][0] - 280), 
+                        this.models.slide3[0].vertices5[2].data[1][0], 1);
+                    this.models.slide3[0].vertices5[1] = CG.Vector3(this.models.slide3[0].vertices5[1].data[0][0] - 
+                        (this.models.slide3[0].vertices5[1].data[0][0] - 280), 
+                        this.models.slide3[0].vertices5[1].data[1][0], 1);
+                    this.lxv *= -1;
+                }
+                //too far left
+                else if(this.models.slide3[0].vertices5[3].data[0][0] < 80){
+                    this.models.slide3[0].vertices5[2] = CG.Vector3(this.models.slide3[0].vertices5[2].data[0][0] + 
+                        (80 - this.models.slide3[0].vertices5[0].data[0][0]), 
+                        this.models.slide3[0].vertices5[2].data[1][0], 1);
+                    this.models.slide3[0].vertices5[1] = CG.Vector3(this.models.slide3[0].vertices5[1].data[0][0] + 
+                        (80 - this.models.slide3[0].vertices5[0].data[0][0]), 
+                        this.models.slide3[0].vertices5[1].data[1][0], 1);
+                    this.models.slide3[0].vertices5[0] = CG.Vector3(this.models.slide3[0].vertices5[0].data[0][0] + 
+                        (80 - this.models.slide3[0].vertices5[0].data[0][0]), 
+                        this.models.slide3[0].vertices5[0].data[1][0], 1);
+                    this.models.slide3[0].vertices5[3] = CG.Vector3(this.models.slide3[0].vertices5[3].data[0][0] + 
+                        (80 - this.models.slide3[0].vertices5[3].data[0][0]), 
+                        this.models.slide3[0].vertices5[3].data[1][0], 1);
+                    this.lxv *= -1;
+                }
+
+
+
+                //right eye logic
+                this.models.slide3[0].vertices6[0] =  CG.Vector3(this.models.slide3[0].vertices6[0].data[0][0] + 
+                    (delta_time * this.rxv), (this.models.slide3[0].vertices6[0].data[1][0]) 
+                    + delta_time * this.ryv, 1);
+                this.models.slide3[0].vertices6[1] =  CG.Vector3(this.models.slide3[0].vertices6[1].data[0][0] + 
+                    (delta_time * this.rxv), (this.models.slide3[0].vertices6[1].data[1][0]) 
+                    + delta_time * this.ryv, 1);
+                this.models.slide3[0].vertices6[2] =  CG.Vector3(this.models.slide3[0].vertices6[2].data[0][0] + 
+                    (delta_time * this.rxv), (this.models.slide3[0].vertices6[2].data[1][0]) 
+                    + delta_time * this.ryv, 1);
+                this.models.slide3[0].vertices6[3] =  CG.Vector3(this.models.slide3[0].vertices6[3].data[0][0] + 
+                    (delta_time * this.rxv), (this.models.slide3[0].vertices6[3].data[1][0]) 
+                    + delta_time * this.ryv, 1);
+
+                this.distamount = this.rd;
+                this.rd = this.rd + (delta_time * this.rg * this.rdir);
+                if(this.rd > 20){
+                    this.rd =  20 - (this.rd - 20)
+                    this.rdir *= -1;
+                }
+                if(this.rd < 0){
+                    this.rd = this.rd * -1;
+                    this.rdir *= -1;
+                }
+                this.distamount = this.rd - this.distamount;
+                this.models.slide3[0].vertices6[0] =  CG.Vector3(this.models.slide3[0].vertices6[0].data[0][0] 
+                    - this.distamount, this.models.slide3[0].vertices6[0].data[1][0] 
+                    - this.distamount, 1);
+                this.models.slide3[0].vertices6[1] =  CG.Vector3(this.models.slide3[0].vertices6[1].data[0][0] 
+                    + this.distamount, this.models.slide3[0].vertices6[1].data[1][0] 
+                    - this.distamount, 1);
+                this.models.slide3[0].vertices6[2] =  CG.Vector3(this.models.slide3[0].vertices6[2].data[0][0] 
+                    + this.distamount, this.models.slide3[0].vertices6[2].data[1][0] 
+                    + this.distamount, 1);
+                this.models.slide3[0].vertices6[3] =  CG.Vector3(this.models.slide3[0].vertices6[3].data[0][0] 
+                    - this.distamount, this.models.slide3[0].vertices6[3].data[1][0] 
+                    + this.distamount, 1);
+                
+                //too far down
+                if(this.models.slide3[0].vertices6[1].data[1][0] < 330){
+                    this.models.slide3[0].vertices6[2] =  CG.Vector3(this.models.slide3[0].vertices6[2].data[0][0], 
+                        (this.models.slide3[0].vertices6[2].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices6[0].data[1][0]), 1);
+                    this.models.slide3[0].vertices6[3] =  CG.Vector3(this.models.slide3[0].vertices6[3].data[0][0], 
+                        (this.models.slide3[0].vertices6[3].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices6[0].data[1][0]), 1);
+                    this.models.slide3[0].vertices6[0] =  CG.Vector3(this.models.slide3[0].vertices6[0].data[0][0], 
+                        (this.models.slide3[0].vertices6[0].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices6[0].data[1][0]), 1);
+                    this.models.slide3[0].vertices6[1] =  CG.Vector3(this.models.slide3[0].vertices6[1].data[0][0], 
+                        (this.models.slide3[0].vertices6[1].data[1][0]) 
+                        + (330 - this.models.slide3[0].vertices6[1].data[1][0]), 1);
+                    this.ryv *= -1;
+                }
+                //too far up
+                else if(this.models.slide3[0].vertices6[3].data[1][0] > 530){
+                    this.models.slide3[0].vertices6[0] =  CG.Vector3(this.models.slide3[0].vertices6[0].data[0][0], 
+                        (this.models.slide3[0].vertices6[0].data[1][0]) 
+                        - (this.models.slide3[0].vertices6[2].data[1][0] - 530), 1);
+                    this.models.slide3[0].vertices6[1] =  CG.Vector3(this.models.slide3[0].vertices6[1].data[0][0], 
+                        (this.models.slide3[0].vertices6[1].data[1][0]) 
+                        - (this.models.slide3[0].vertices6[2].data[1][0] - 530), 1);
+                    this.models.slide3[0].vertices6[2] =  CG.Vector3(this.models.slide3[0].vertices6[2].data[0][0], 
+                        (this.models.slide3[0].vertices6[2].data[1][0]) 
+                        - (this.models.slide3[0].vertices6[2].data[1][0] - 530), 1);
+                    this.models.slide3[0].vertices6[3] =  CG.Vector3(this.models.slide3[0].vertices6[3].data[0][0], 
+                        (this.models.slide3[0].vertices6[3].data[1][0]) 
+                        - (this.models.slide3[0].vertices6[3].data[1][0] - 530), 1);
+                    this.ryv *= -1;
+                }
+                //too far right
+                if(this.models.slide3[0].vertices6[1].data[0][0] > 720){
+                    this.models.slide3[0].vertices6[0] = CG.Vector3(this.models.slide3[0].vertices6[0].data[0][0] - 
+                        (this.models.slide3[0].vertices6[1].data[0][0] - 720), 
+                        this.models.slide3[0].vertices6[0].data[1][0], 1);
+                    this.models.slide3[0].vertices6[3] = CG.Vector3(this.models.slide3[0].vertices6[3].data[0][0] - 
+                        (this.models.slide3[0].vertices6[1].data[0][0] - 720), 
+                        this.models.slide3[0].vertices6[3].data[1][0], 1);
+                    this.models.slide3[0].vertices6[2] = CG.Vector3(this.models.slide3[0].vertices6[2].data[0][0] - 
+                        (this.models.slide3[0].vertices6[1].data[0][0] - 720), 
+                        this.models.slide3[0].vertices6[2].data[1][0], 1);
+                    this.models.slide3[0].vertices6[1] = CG.Vector3(this.models.slide3[0].vertices6[1].data[0][0] - 
+                        (this.models.slide3[0].vertices6[1].data[0][0] - 720), 
+                        this.models.slide3[0].vertices6[1].data[1][0], 1);
+                    this.rxv *= -1;
+                }
+                //too far left
+                else if(this.models.slide3[0].vertices6[3].data[0][0] < 520){
+                    this.models.slide3[0].vertices6[2] = CG.Vector3(this.models.slide3[0].vertices6[2].data[0][0] + 
+                        (520 - this.models.slide3[0].vertices6[0].data[0][0]), 
+                        this.models.slide3[0].vertices6[2].data[1][0], 1);
+                    this.models.slide3[0].vertices6[1] = CG.Vector3(this.models.slide3[0].vertices6[1].data[0][0] + 
+                        (520 - this.models.slide3[0].vertices6[0].data[0][0]), 
+                        this.models.slide3[0].vertices6[1].data[1][0], 1);
+                    this.models.slide3[0].vertices6[0] = CG.Vector3(this.models.slide3[0].vertices6[0].data[0][0] + 
+                        (520 - this.models.slide3[0].vertices6[0].data[0][0]), 
+                        this.models.slide3[0].vertices6[0].data[1][0], 1);
+                    this.models.slide3[0].vertices6[3] = CG.Vector3(this.models.slide3[0].vertices6[3].data[0][0] + 
+                        (520 - this.models.slide3[0].vertices6[3].data[0][0]), 
+                        this.models.slide3[0].vertices6[3].data[1][0], 1);
+                    this.rxv *= -1;
+                }
+
+                //nose
+                this.angle += delta_time * this.rotaterate;
+                if(this.angle > 360){
+                    this.angle = this.angle - 360;
+                }
+                this.models.slide3[0].vertices7[0] = CG.Vector3(400 + Math.cos((this.angle) * Math.PI / 180) * 20, 
+                    300 + Math.sin((this.angle) * Math.PI / 180) * 20, 1)
+                this.models.slide3[0].vertices7[1] = CG.Vector3(400 + Math.cos((this.angle+120) * Math.PI / 180) * 20, 
+                    300 + Math.sin((this.angle+120) * Math.PI / 180) * 20, 1)
+                this.models.slide3[0].vertices7[2] = CG.Vector3(400 + Math.cos((this.angle+240) * Math.PI / 180) * 20, 
+                    300 + Math.sin((this.angle+240) * Math.PI / 180) * 20, 1)
                 break;
         }
 
@@ -385,8 +663,17 @@ class Renderer {
         // TODO: get creative!
         //   - animation should involve all three basic transformation types
         //     (translation, scaling, and rotation)
-        
-        
+        let green = [32, 128, 32, 255];
+        this.drawConvexPolygon(this.models.slide3[0].vertices, green);
+        let black = [0, 0, 0, 255];
+        this.drawConvexPolygon(this.models.slide3[0].vertices2, black);
+        this.drawConvexPolygon(this.models.slide3[0].vertices3, black);
+        this.drawConvexPolygon(this.models.slide3[0].vertices4, black);
+        let darkblue = [32, 64, 128, 256];
+        this.drawConvexPolygon(this.models.slide3[0].vertices5, darkblue);
+        let darkpurple = [64, 32, 128, 256];
+        this.drawConvexPolygon(this.models.slide3[0].vertices6, darkpurple);
+        this.drawConvexPolygon(this.models.slide3[0].vertices7, black);
     }
     
     // vertex_list:  array of object [Matrix(3, 1), Matrix(3, 1), ..., Matrix(3, 1)]
