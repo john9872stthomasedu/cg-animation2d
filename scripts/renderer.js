@@ -20,6 +20,8 @@ class Renderer {
         //Slide3
         this.growing1 = 1;
         this.dist1 = 75;
+        this.growing2 = 1;
+        this.dist2 = 75;
 
         this.models = {
             slide0: [ //KRISTINA
@@ -112,10 +114,10 @@ class Renderer {
                         CG.Vector3(175, 325, 1)
                     ],
                     vertices2: [
-                        CG.Vector3(475, 200, 1),
-                        CG.Vector3(625, 350, 1),
-                        CG.Vector3(625, 450, 1),
-                        CG.Vector3(475, 300, 1)
+                        CG.Vector3(475, 175, 1),
+                        CG.Vector3(625, 175, 1),
+                        CG.Vector3(625, 325, 1),
+                        CG.Vector3(475, 325, 1)
                     ]
                 }
             ],
@@ -220,6 +222,7 @@ class Renderer {
 
             case 2: //Scaling
                 this.dist1 += this.growing1 * delta_time * 0.05;
+                this.dist2 += this.growing2 * delta_time * 0.05 * 2;
                 if(this.dist1 > 150){
                     this.dist1 = 150 - (this.dist1 - 150);
                     this.growing1 = -1;
@@ -236,10 +239,31 @@ class Renderer {
                         this.growing1 = -1;
                     }
                 }
+                if(this.dist2 > 150){
+                    this.dist2 = 150 - (this.dist2 - 150);
+                    this.growing2 = -1;
+                    if(this.dist2 < 25){
+                        this.dist2 = 25;
+                        this.growing2 = 1;
+                    }
+                }
+                else if(this.dist2 < 25){
+                    this.dist2 = 25 + (25 - this.dist2);
+                    this.growing2 = 1;
+                    if(this.dist2 > 150){
+                        this.dist2 = 150;
+                        this.growing2 = -1;
+                    }
+                }
                 this.models.slide2[0].vertices[0] = CG.Vector3(250-this.dist1, 250-this.dist1, 1);
                 this.models.slide2[0].vertices[1] = CG.Vector3(250+this.dist1, 250-this.dist1, 1);
                 this.models.slide2[0].vertices[2] = CG.Vector3(250+this.dist1, 250+this.dist1, 1);
                 this.models.slide2[0].vertices[3] = CG.Vector3(250-this.dist1, 250+this.dist1, 1);
+
+                this.models.slide2[0].vertices2[0] = CG.Vector3(550-this.dist1, 250-this.dist2, 1);
+                this.models.slide2[0].vertices2[1] = CG.Vector3(550+this.dist1, 250-this.dist2, 1);
+                this.models.slide2[0].vertices2[2] = CG.Vector3(550+this.dist1, 250+this.dist2, 1);
+                this.models.slide2[0].vertices2[3] = CG.Vector3(550-this.dist1, 250+this.dist2, 1);
                 break;
             case 3: //All of the above
                 break;
