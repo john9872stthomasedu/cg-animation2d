@@ -14,6 +14,9 @@ class Renderer {
         this.fps = fps;
         this.start_time = null;
         this.prev_time = null;
+        //Slide3
+        this.growing1 = 1;
+        this.dist1 = 75;
 
         this.models = {
             slide0: [
@@ -29,7 +32,22 @@ class Renderer {
                 }
             ],
             slide1: [],
-            slide2: [],
+            slide2: [
+                {
+                    vertices: [
+                        CG.Vector3(175, 175, 1),
+                        CG.Vector3(325, 175, 1),
+                        CG.Vector3(325, 325, 1),
+                        CG.Vector3(175, 325, 1)
+                    ],
+                    vertices2: [
+                        CG.Vector3(475, 200, 1),
+                        CG.Vector3(625, 350, 1),
+                        CG.Vector3(625, 450, 1),
+                        CG.Vector3(475, 300, 1)
+                    ]
+                }
+            ],
             slide3: []
         };
     }
@@ -86,6 +104,31 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
+        
+        //Slide2
+        this.dist1 += this.growing1 * delta_time * 0.05;
+        if(this.dist1 > 150){
+            this.dist1 = 150 - (this.dist1 - 150);
+            this.growing1 = -1;
+            if(this.dist1 < 25){
+                this.dist1 = 25;
+                this.growing1 = 1;
+            }
+        }
+        else if(this.dist1 < 25){
+            this.dist1 = 25 + (25 - this.dist1);
+            this.growing1 = 1;
+            if(this.dist1 > 150){
+                this.dist1 = 150;
+                this.growing1 = -1;
+            }
+        }
+        this.models.slide2[0].vertices[0] = CG.Vector3(250-this.dist1, 250-this.dist1, 1);
+        this.models.slide2[0].vertices[1] = CG.Vector3(250+this.dist1, 250-this.dist1, 1);
+        this.models.slide2[0].vertices[2] = CG.Vector3(250+this.dist1, 250+this.dist1, 1);
+        this.models.slide2[0].vertices[3] = CG.Vector3(250-this.dist1, 250+this.dist1, 1);
+
+        
     }
     
     //
@@ -133,7 +176,10 @@ class Renderer {
         //   - have each polygon grow / shrink different sizes
         //   - try at least 1 polygon that grows / shrinks non-uniformly in the x and y directions
 
-
+        let teal = [0, 128, 128, 255];
+        this.drawConvexPolygon(this.models.slide2[0].vertices, teal);
+        let orange = [255, 128, 0, 255];
+        this.drawConvexPolygon(this.models.slide2[0].vertices2, orange);
     }
 
     //
