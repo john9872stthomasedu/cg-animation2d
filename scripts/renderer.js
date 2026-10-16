@@ -246,6 +246,30 @@ class Renderer {
                 let transform_x = this.ball_velocity.x * delta_time;
                 let transform_y = this.ball_velocity.y * delta_time;
 
+                let current_vertices = [];
+                for (let v of this.models.slide0[0].vertices) {
+                    current_vertices.push(Matrix.multiply([transform_m, v]));
+                }
+
+                let [cx, cy] = this.findCenter(current_vertices)
+                let r=50
+
+                let nextX = cx + transform_x
+                let nextY = cy + transform_y
+
+                let optional_x = CG.Vector3(nextX, cy, 1)
+                let optional_y = CG.Vector3(cx, nextY, 1)
+
+                //Added this to avoid tunneling at low FPS
+                if(nextX-r < 0 || nextX + r >= this.canvas.width){
+                    this.updateVelocity(optional_x)
+                    transform_x = this.ball_velocity.x * delta_time
+                }
+                if(nextY-r < 0 || nextY + r >= this.canvas.height){
+                    this.updateVelocity(optional_y)
+                    transform_y = this.ball_velocity.y * delta_time
+                }
+
                 transform_m.values[0][2] += transform_x;
                 transform_m.values[1][2] += transform_y;
 
